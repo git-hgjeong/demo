@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,5 +52,16 @@ public class IndexController {
         user.setPassword(encPassword);
         userRepository.save(user);
         return "redirect:/loginForm";
+    }
+    @Secured("ROLE_ADMIN")
+    @GetMapping({"/info"})
+    public @ResponseBody String info(){
+        return "개인정보";
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")   //EnableGlobalMethodSecurity Setting...
+    @GetMapping({"/data"})
+    public @ResponseBody String data(){
+        return "데이타";
     }
 }
